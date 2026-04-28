@@ -1,0 +1,62 @@
+/* Light Theme Variables */
+body[data-theme="light"] {
+  --bg:          #f8f9fa;
+  --bg2:         #ffffff;
+  --surface:     #ffffff;
+  --surface2:    #f1f3f5;
+  --surface3:    #e9ecef;
+  --border:      rgba(0,0,0,0.08);
+  --border2:     rgba(0,0,0,0.14);
+
+  --accent:      #d946ef;
+  --accent-dim:  rgba(217,70,239,0.1);
+  --accent-glow: rgba(217,70,239,0.3);
+  --accent2:     #a855f7;
+  --accent3:     #ec4899;
+  --danger:      #dc2626;
+  --danger-dim:  rgba(220,38,38,0.1);
+  --warn:        #f59e0b;
+  --warn-dim:    rgba(245,158,11,0.1);
+
+  --text:        #1a1a1a;
+  --text-muted:  #6b7280;
+  --text-faint:  #9ca3af;
+
+  --shadow:      0 4px 24px rgba(0,0,0,0.08);
+  --shadow-glow: 0 0 32px rgba(217,70,239,0.15);
+}
+
+body[data-theme="light"] {
+  background: #f8f9fa;
+  background-image:
+    radial-gradient(ellipse at 20% 20%, rgba(168,85,247,0.08) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 10%, rgba(236,72,153,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 60% 80%, rgba(217,70,239,0.05) 0%, transparent 55%),
+    radial-gradient(ellipse at 10% 85%, rgba(139,92,246,0.04) 0%, transparent 50%);
+}
+
+body[data-theme="light"] .bg-orb {
+  opacity: 0.4;
+}
+
+body[data-theme="light"] .header {
+  background: rgba(255,255,255,0.90);
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+body[data-theme="light"] input[type="text"],
+body[data-theme="light"] input[type="time"] {
+  color-scheme: light;
+}
+
+body[data-theme="light"] input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(0);
+}
+
+body[data-theme="light"] .alarm-overlay {
+  background: rgba(255, 255, 255, 0.96);
+}
+
+body[data-theme="light"] .modal-overlay {
+  background: rgba(0,0,0,0.4);
+}
