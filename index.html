@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MediTrack — Never miss a dose</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="theme-light.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ── BACKGROUND ORBS (decorative) ── -->
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
+  <div class="orb-extra"></div>
+
+  <!-- ── HEADER ── -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2z" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span>MediTrack</span>
+      </div>
+      <div class="header-right">
+        <button class="theme-toggle" id="themeToggle" title="Toggle theme" aria-label="Toggle theme">
+          <svg class="sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 1v6m0 6v6M23 12h-6m-6 0H1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <svg class="moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </button>
+        <div class="notify-btn" id="notifyBtn" title="Enable reminders">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span id="notifyLabel">Enable reminders</span>
+        </div>
+        <button class="add-btn test-alarm-btn" id="testAlarm" title="Test the alarm popup" style="background:var(--surface2);color:var(--text-muted);border:1px solid var(--border2);box-shadow:none;">
+          🔔 Test Alarm
+        </button>
+        <button class="add-btn" id="openModal">
+          <span>+</span> Add Medication
+        </button>
+        <button class="add-btn" id="exportData" title="Export data" style="background:var(--surface2);color:var(--text-muted);border:1px solid var(--border2);box-shadow:none;">
+          📊 Export
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+
+    <!-- ── HERO STATS ROW ── -->
+    <section class="stats-row">
+
+      <!-- Today's adherence ring -->
+      <div class="stat-card ring-card">
+        <div class="ring-wrap">
+          <svg class="ring-svg" viewBox="0 0 120 120">
+            <circle class="ring-bg" cx="60" cy="60" r="50"/>
+            <circle class="ring-fg" id="adherenceRing" cx="60" cy="60" r="50"
+              stroke-dasharray="314"
+              stroke-dashoffset="314"
+              transform="rotate(-90 60 60)"/>
+          </svg>
+          <div class="ring-label">
+            <span class="ring-pct" id="adherencePct">0%</span>
+            <span class="ring-sub">today</span>
+          </div>
+        </div>
+        <div class="ring-info">
+          <h3>Daily Adherence</h3>
+          <p id="adherenceText">No medications taken yet today.</p>
+        </div>
+      </div>
+
+      <!-- Streak counter -->
+      <div class="stat-card streak-card">
+        <div class="streak-num" id="streakNum">0</div>
+        <div class="streak-fire">🔥</div>
+        <div class="streak-label">Day Streak</div>
+        <div class="streak-sub" id="streakSub">Start your streak today</div>
+      </div>
+
+      <!-- Next dose countdown -->
+      <div class="stat-card next-card">
+        <div class="next-icon">⏱</div>
+        <div class="next-label">Next Dose</div>
+        <div class="next-time" id="nextTime">—</div>
+        <div class="next-name" id="nextName">No upcoming doses</div>
+      </div>
+
+      <!-- Total meds -->
+      <div class="stat-card total-card">
+        <div class="total-num" id="totalMeds">0</div>
+        <div class="total-label">Medications<br>Tracked</div>
+        <div class="total-bar">
+          <div class="total-fill" id="totalFill"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ── STREAK CALENDAR ── -->
+    <section class="calendar-section">
+      <div class="section-header">
+        <h2>Last 14 Days</h2>
+        <span class="section-hint">Tap a day to see details</span>
+      </div>
+      <div class="calendar-grid" id="calendarGrid">
+        <!-- Filled by JS -->
+      </div>
+    </section>
+
+    <!-- ── MEDICATION LIST ── -->
+    <section class="meds-section">
+      <div class="section-header">
+        <h2>Today's Schedule</h2>
+        <span class="section-hint" id="todayDate"></span>
+      </div>
+      <div class="med-list" id="medList">
+        <!-- Filled by JS -->
+      </div>
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">💊</div>
+        <p>No medications added yet.</p>
+        <p class="empty-sub">Tap <strong>+ Add Medication</strong> to get started.</p>
+      </div>
+    </section>
+
+    <!-- ── LOG ── -->
+    <section class="log-section">
+      <div class="section-header">
+        <h2>Dose History</h2>
+        <button class="clear-log-btn" id="clearLog">Clear log</button>
+      </div>
+      <div class="log-list" id="logList">
+        <div class="log-empty">No doses logged yet.</div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── ADD MEDICATION MODAL ── -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal">
+      <button class="modal-close" id="closeModal">&#10005;</button>
+      <h2 class="modal-title">Add Medication</h2>
+
+      <div class="form-group">
+        <label for="medName">Medication name</label>
+        <input type="text" id="medName" placeholder="e.g. Vitamin D, Metformin" autocomplete="off" />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="medDose">Dosage</label>
+          <input type="text" id="medDose" placeholder="e.g. 500mg" />
+        </div>
+        <div class="form-group">
+          <label for="medTime">Reminder time</label>
+          <input type="time" id="medTime" value="08:00" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Color tag</label>
+        <div class="color-picker" id="colorPicker">
+          <div class="color-swatch active" data-color="#00d4a0" style="background:#00d4a0"></div>
+          <div class="color-swatch" data-color="#f87171" style="background:#f87171"></div>
+          <div class="color-swatch" data-color="#60a5fa" style="background:#60a5fa"></div>
+          <div class="color-swatch" data-color="#fbbf24" style="background:#fbbf24"></div>
+          <div class="color-swatch" data-color="#c084fc" style="background:#c084fc"></div>
+          <div class="color-swatch" data-color="#fb923c" style="background:#fb923c"></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Frequency</label>
+        <div class="freq-picker" id="freqPicker">
+          <button class="freq-btn active" data-freq="daily">Daily</button>
+          <button class="freq-btn" data-freq="twice">Twice daily</button>
+          <button class="freq-btn" data-freq="weekly">Weekly</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="medNotes">Notes (optional)</label>
+        <input type="text" id="medNotes" placeholder="e.g. Avoid dairy products" />
+      </div>
+
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="medWithFood" class="food-checkbox" />
+          <span class="food-label">🍽️ Take with food</span>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>Multiple doses per day</label>
+        <div id="timesContainer">
+          <div class="time-input-row">
+            <input type="time" class="dose-time" value="08:00" />
+            <button type="button" class="remove-time-btn" style="display:none;">✕</button>
+          </div>
+        </div>
+        <button type="button" class="add-time-btn" id="addTimeBtn">+ Add another time</button>
+      </div>
+
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="trackInventory" class="food-checkbox" />
+          <span class="food-label">📦 Track inventory</span>
+        </label>
+      </div>
+
+      <div class="inventory-fields" id="inventoryFields" style="display:none;">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="pillsRemaining">Pills remaining</label>
+            <input type="number" id="pillsRemaining" min="0" placeholder="30" />
+          </div>
+          <div class="form-group">
+            <label for="lowStockThreshold">Low stock alert</label>
+            <input type="number" id="lowStockThreshold" min="1" value="5" placeholder="5" />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="doctorInfo">Doctor / Pharmacy (optional)</label>
+        <input type="text" id="doctorInfo" placeholder="Dr. Smith - (555) 123-4567" />
+      </div>
+
+      <div class="form-group">
+        <label for="prescriptionNumber">Prescription # (optional)</label>
+        <input type="text" id="prescriptionNumber" placeholder="Rx #12345" />
+      </div>
+
+      <div class="form-group">
+        <label>Photo (optional)</label>
+        <input type="file" id="medPhoto" accept="image/*" class="photo-input" />
+        <div id="photoPreview" class="photo-preview"></div>
+      </div>
+
+      <button class="save-btn" id="saveMed">Save Medication</button>
+    </div>
+  </div>
+
+  <!-- ── ALARM OVERLAY ── -->
+  <div class="alarm-overlay" id="alarmOverlay">
+    <div class="alarm-ripple"></div>
+    <div class="alarm-ripple ripple-2"></div>
+    <div class="alarm-ripple ripple-3"></div>
+    <div class="alarm-box">
+      <div class="alarm-icon-wrap" id="alarmIconWrap">
+        <div class="alarm-pill-icon">💊</div>
+      </div>
+      <div class="alarm-badge">TIME TO TAKE YOUR MEDICATION</div>
+      <h2 class="alarm-med-name" id="alarmMedName">Medication Name</h2>
+      <div class="alarm-med-detail" id="alarmMedDetail">500mg · Take with food</div>
+      <div class="alarm-time" id="alarmTime">08:00 AM</div>
+      <div class="alarm-actions">
+        <button class="alarm-btn snooze" id="alarmSnooze">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          Snooze 10 min
+        </button>
+        <button class="alarm-btn take" id="alarmTake">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          ✓ I took it
+        </button>
+      </div>
+      <button class="alarm-dismiss" id="alarmDismiss">Dismiss without logging</button>
+    </div>
+  </div>
+
+  <!-- ── TOAST NOTIFICATION ── -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ── DAY DETAIL MODAL ── -->
+  <div class="modal-overlay" id="dayDetailOverlay">
+    <div class="modal day-detail-modal" id="dayDetailModal">
+      <button class="modal-close" id="closeDayDetail">&#10005;</button>
+      <h2 class="modal-title" id="dayDetailTitle">Loading...</h2>
+      
+      <div class="day-stats">
+        <div class="day-stat">
+          <div class="day-stat-num" id="dayStatTaken">0</div>
+          <div class="day-stat-label">Taken</div>
+        </div>
+        <div class="day-stat">
+          <div class="day-stat-num" id="dayStatMissed">0</div>
+          <div class="day-stat-label">Missed</div>
+        </div>
+        <div class="day-stat">
+          <div class="day-stat-num" id="dayStatAdherence">0%</div>
+          <div class="day-stat-label">Adherence</div>
+        </div>
+      </div>
+
+      <div id="dayDetailContent" class="day-detail-content">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
